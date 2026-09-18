@@ -5,6 +5,7 @@ description = "CNN + Transfer Learning + Data Augmentation for 72-class Thai cha
 requires-python = ">=3.11,<3.12"
 dependencies = [
     "tensorflow==2.15.0",
+    "tensorflow-intel==2.15.0; sys_platform == 'win32'",
     "tensorflow-io-gcs-filesystem<0.32; sys_platform == 'win32'",
     "numpy>=1.26,<2.0",
     "pandas>=2.2",

@@ -31,13 +31,18 @@ def savefig(fig, name: str, dpi: int = 150):
     return path
 
 
-def plot_class_distribution(counts_df, name="00_class_distribution.png"):
-    fig, ax = plt.subplots(figsize=(14, 6))
-    sns.barplot(data=counts_df, x="class_id", y="count", order=counts_df["class_id"], palette=PALETTE, ax=ax)
-    ax.set_xlabel("Class ID (folder name in round2/)")
+def plot_class_distribution(counts_df, name="00_class_distribution.png", class_id_to_thai=None):
+    fig, ax = plt.subplots(figsize=(18, 6))
+    labels = counts_df["class_id"]
+    if class_id_to_thai:
+        labels = [f"{cid}\n{class_id_to_thai.get(str(cid), '?')}" for cid in counts_df["class_id"]]
+    sns.barplot(data=counts_df, x="class_id", y="count", order=counts_df["class_id"], hue="class_id", legend=False, palette=PALETTE, ax=ax)
+    ax.set_xticks(range(len(labels)))
+    ax.set_xticklabels(labels)
+    ax.set_xlabel("Class ID (folder name) / อักษรไทย")
     ax.set_ylabel("Number of images")
     ax.set_title("จำนวนภาพต่อคลาส เรียงจากมากไปน้อย (Class Imbalance)")
-    plt.setp(ax.get_xticklabels(), rotation=90)
+    plt.setp(ax.get_xticklabels(), rotation=90, fontsize=8)
     fig.tight_layout()
     savefig(fig, name)
     plt.show()

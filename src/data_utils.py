@@ -2,24 +2,17 @@
 data_utils.py
 =============
 Utilities for discovering, indexing, and splitting the Thai character/digit
-image dataset stored under ``round2/<class_id>/<image>.jpg``.
+image dataset stored under ``ThaiCharacter Dataset/round2/<class_id>/<image>.jpg``.
 
-Important note on class labels
--------------------------------
-The original assignment brief describes a 72-class Thai character/digit
-dataset. The dataset actually provided in this project (``round2/``) only
-contains **31 class folders**, named with numeric IDs (e.g. ``161``, ``185``,
-``193``, ...) rather than the Thai characters themselves, and there is no
-label-mapping file anywhere in the delivered data that maps a folder ID to
-an actual Thai grapheme (consonant / vowel / tone mark / digit).
-
-Rather than inventing a Thai-character name for each numeric folder (which
-would silently introduce **incorrect ground-truth labels** into a graded
-submission), this project treats each folder name as an opaque
-``class_id`` string and is fully driven by whatever folders are present
-under ``DATA_ROOT``. If a real label-mapping file becomes available later,
-only ``CLASS_ID_TO_THAI`` below needs to be filled in — nothing else in the
-pipeline needs to change, because everything is keyed by ``class_id``.
+Class labels
+------------
+The dataset provides 72 class folders named with numeric IDs (e.g. ``161``,
+``185``, ``193``, ...). ``label.json`` at the project root maps each numeric
+ID to the actual Thai grapheme (consonant / vowel / tone mark / digit) it
+represents, e.g. ``{"id": 161, "char": "ก"}``. That mapping is loaded into
+``CLASS_ID_TO_THAI`` below. Everything else in the pipeline is still keyed
+by the opaque ``class_id`` string (the folder name) — the Thai character is
+only used for human-readable display in plots/tables/reports.
 """
 
 from __future__ import annotations
@@ -35,7 +28,8 @@ import pandas as pd
 # Paths
 # ---------------------------------------------------------------------------
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-DATA_ROOT = PROJECT_ROOT / "round2"
+DATA_ROOT = PROJECT_ROOT / "ThaiCharacter Dataset" / "round2"
+LABEL_JSON = PROJECT_ROOT / "label.json"
 OUTPUTS_DIR = PROJECT_ROOT / "outputs"
 FIGURES_DIR = OUTPUTS_DIR / "figures"
 MODELS_DIR = OUTPUTS_DIR / "models"
@@ -47,9 +41,29 @@ for d in (FIGURES_DIR, MODELS_DIR, CACHE_DIR):
 
 VALID_EXTS = {".jpg", ".jpeg", ".png"}
 
-# Optional real mapping: {"161": "ก", "162": "ข", ...}. Left empty because no
-# mapping file was provided with the dataset — see module docstring.
-CLASS_ID_TO_THAI: dict[str, str] = {}
+
+def load_class_id_to_thai(path: Path = LABEL_JSON) -> dict[str, str]:
+    """Load the {class_id: thai_char} mapping from label.json.
+
+    id 240 is mapped to Thai digit zero "๐" (U+0E50) rather than the ASCII
+    "0" present in the raw label.json, for consistency with the other
+    9 Thai-numeral classes (241-249 = ๑-๙); this is a display-only fix and
+    does not affect training, which is keyed by the numeric folder id.
+    """
+    if not path.exists():
+        return {}
+    import json
+
+    with open(path, encoding="utf-8") as f:
+        entries = json.load(f)
+    mapping = {str(e["id"]): e["char"] for e in entries}
+    if mapping.get("240") == "0":
+        mapping["240"] = "๐"
+    return mapping
+
+
+# {"161": "ก", "162": "ข", ..., "249": "๙"} — see load_class_id_to_thai().
+CLASS_ID_TO_THAI: dict[str, str] = load_class_id_to_thai()
 
 
 def list_images(data_root: Path = DATA_ROOT) -> pd.DataFrame:
