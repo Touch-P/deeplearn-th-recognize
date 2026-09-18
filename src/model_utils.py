@@ -18,6 +18,18 @@ from tensorflow.keras.applications import MobileNetV2, EfficientNetB0
 BackboneName = Literal["mobilenetv2", "efficientnetb0"]
 
 
+def get_preprocess_fn(name: BackboneName):
+    """Return just the backbone-specific preprocess_input function, without
+    constructing (and downloading weights for) a model instance."""
+    if name == "mobilenetv2":
+        from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+    elif name == "efficientnetb0":
+        from tensorflow.keras.applications.efficientnet import preprocess_input
+    else:
+        raise ValueError(f"Unknown backbone: {name}")
+    return preprocess_input
+
+
 def get_backbone(name: BackboneName, input_shape=(96, 96, 3)):
     """Return (backbone_model, preprocess_fn) for a supported ImageNet backbone."""
     if name == "mobilenetv2":
