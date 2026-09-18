@@ -1,0 +1,30 @@
+# Dataset (large, not committed — see README for how to obtain/place it)
+round2/
+__MACOSX/
+*.zip
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.pytest_cache/
+
+# uv
+.python-version
+
+# Model checkpoints — only the final best model is force-added manually if small
+# enough (<50MB); everything else (intermediate epoch checkpoints, logs) is ignored.
+outputs/models/*.h5
+outputs/models/*.keras
+outputs/models/checkpoint_epoch_*
+!outputs/models/.gitkeep
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Precomputed image cache (large, regenerable from round2/ via notebook 01)
+cache/

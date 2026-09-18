@@ -1,0 +1,162 @@
+"""
+data_utils.py
+=============
+Utilities for discovering, indexing, and splitting the Thai character/digit
+image dataset stored under ``round2/<class_id>/<image>.jpg``.
+
+Important note on class labels
+-------------------------------
+The original assignment brief describes a 72-class Thai character/digit
+dataset. The dataset actually provided in this project (``round2/``) only
+contains **31 class folders**, named with numeric IDs (e.g. ``161``, ``185``,
+``193``, ...) rather than the Thai characters themselves, and there is no
+label-mapping file anywhere in the delivered data that maps a folder ID to
+an actual Thai grapheme (consonant / vowel / tone mark / digit).
+
+Rather than inventing a Thai-character name for each numeric folder (which
+would silently introduce **incorrect ground-truth labels** into a graded
+submission), this project treats each folder name as an opaque
+``class_id`` string and is fully driven by whatever folders are present
+under ``DATA_ROOT``. If a real label-mapping file becomes available later,
+only ``CLASS_ID_TO_THAI`` below needs to be filled in — nothing else in the
+pipeline needs to change, because everything is keyed by ``class_id``.
+"""
+
+from __future__ import annotations
+
+import os
+from pathlib import Path
+from typing import Optional
+
+import numpy as np
+import pandas as pd
+
+# ---------------------------------------------------------------------------
+# Paths
+# ---------------------------------------------------------------------------
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DATA_ROOT = PROJECT_ROOT / "round2"
+OUTPUTS_DIR = PROJECT_ROOT / "outputs"
+FIGURES_DIR = OUTPUTS_DIR / "figures"
+MODELS_DIR = OUTPUTS_DIR / "models"
+CACHE_DIR = PROJECT_ROOT / "cache"  # precomputed arrays; gitignored (large)
+SPLIT_CSV = OUTPUTS_DIR / "split.csv"
+
+for d in (FIGURES_DIR, MODELS_DIR, CACHE_DIR):
+    d.mkdir(parents=True, exist_ok=True)
+
+VALID_EXTS = {".jpg", ".jpeg", ".png"}
+
+# Optional real mapping: {"161": "ก", "162": "ข", ...}. Left empty because no
+# mapping file was provided with the dataset — see module docstring.
+CLASS_ID_TO_THAI: dict[str, str] = {}
+
+
+def list_images(data_root: Path = DATA_ROOT) -> pd.DataFrame:
+    """Walk ``data_root`` and build a DataFrame with one row per image.
+
+    Columns: filepath (str, absolute), class_id (str, folder name),
+    filename (str).
+    """
+    rows = []
+    if not data_root.exists():
+        raise FileNotFoundError(
+            f"Dataset folder not found at {data_root}. Place the provided "
+            f"'round2' dataset folder at the project root."
+        )
+    for class_dir in sorted(data_root.iterdir()):
+        if not class_dir.is_dir():
+            continue
+        class_id = class_dir.name
+        for f in class_dir.iterdir():
+            if f.suffix.lower() in VALID_EXTS:
+                rows.append(
+                    {
+                        "filepath": str(f.resolve()),
+                        "class_id": class_id,
+                        "filename": f.name,
+                    }
+                )
+    df = pd.DataFrame(rows)
+    if df.empty:
+        raise RuntimeError(f"No images found under {data_root}")
+    return df
+
+
+def class_label_display(class_id: str) -> str:
+    """Human-readable label for plots/reports: Thai char if known, else the id."""
+    thai = CLASS_ID_TO_THAI.get(str(class_id))
+    return f"{class_id} ({thai})" if thai else str(class_id)
+
+
+def stratified_split(
+    df: pd.DataFrame,
+    val_fraction: float = 0.2,
+    random_state: int = 42,
+    min_val_per_class: int = 1,
+) -> pd.DataFrame:
+    """Custom stratified 80/20 split that is robust to very small classes.
+
+    ``sklearn.model_selection.train_test_split(..., stratify=...)`` raises an
+    error whenever any class has fewer than 2 members, because it cannot put
+    at least one sample in *each* split. This dataset contains two such
+    classes (only 1 image each), so we implement our own rule instead:
+
+    - class has >= 5 images  -> round(val_fraction * n) go to validation
+      (at least 1), the rest to train.
+    - class has 2-4 images   -> exactly 1 image goes to validation, the rest
+      to train (keeps every class represented in both splits when at all
+      possible).
+    - class has 1 image      -> the single image goes to train only; the
+      class has zero validation coverage (unavoidable, documented in the
+      EDA notebook).
+
+    Returns the input DataFrame with an added ``split`` column
+    (``"train"`` or ``"val"``).
+    """
+    rng = np.random.RandomState(random_state)
+    split_col = pd.Series(index=df.index, dtype=object)
+
+    for class_id, group in df.groupby("class_id"):
+        idx = group.index.to_numpy().copy()
+        rng.shuffle(idx)
+        n = len(idx)
+        if n == 1:
+            n_val = 0
+        elif n < 5:
+            n_val = 1
+        else:
+            n_val = max(min_val_per_class, round(n * val_fraction))
+            n_val = min(n_val, n - 1)  # always leave >=1 for train
+        val_idx = idx[:n_val]
+        train_idx = idx[n_val:]
+        split_col.loc[val_idx] = "val"
+        split_col.loc[train_idx] = "train"
+
+    out = df.copy()
+    out["split"] = split_col
+    return out
+
+
+def save_split(df: pd.DataFrame, path: Path = SPLIT_CSV) -> None:
+    df.to_csv(path, index=False)
+
+
+def load_split(path: Path = SPLIT_CSV) -> pd.DataFrame:
+    if not path.exists():
+        raise FileNotFoundError(
+            f"{path} not found. Run notebooks/01_preprocessing_augmentation.ipynb first."
+        )
+    return pd.read_csv(path, dtype={"class_id": str})
+
+
+def class_counts_table(df: pd.DataFrame) -> pd.DataFrame:
+    """Return class_id, count, sorted descending — used for the imbalance bar chart."""
+    counts = (
+        df.groupby("class_id")
+        .size()
+        .reset_index(name="count")
+        .sort_values("count", ascending=False)
+        .reset_index(drop=True)
+    )
+    return counts

@@ -1,0 +1,24 @@
+[project]
+name = "deeplearn-th-recognize"
+version = "0.1.0"
+description = "CNN + Transfer Learning + Data Augmentation for 72-class Thai character/digit recognition (class-imbalanced dataset)"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "tensorflow==2.15.0",
+    "tensorflow-io-gcs-filesystem<0.32; sys_platform == 'win32'",
+    "numpy>=1.26,<2.0",
+    "pandas>=2.2",
+    "matplotlib>=3.8",
+    "seaborn>=0.13",
+    "scikit-learn>=1.4",
+    "pillow>=10.0",
+    "scipy>=1.11",
+    "tqdm>=4.66",
+    "jupyter>=1.0",
+    "ipykernel>=6.29",
+    "nbformat>=5.10",
+    "nbconvert>=7.16",
+]
+
+[tool.uv]
+package = false
