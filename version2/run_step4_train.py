@@ -10,7 +10,7 @@ run_step4_train.py  -  ขั้นที่ 4: Final Training
 - เทรนบน train ที่ augment แล้ว (manifest จากขั้นที่ 3) 10 epochs
   validate ทุก epoch บน val (ไม่ augment)
 - เก็บ train/val loss + accuracy ทุก epoch เป็น .jsonl และ .csv
-- เซฟ checkpoint ที่ val accuracy ดีที่สุด -> outputs_torch/models/best_model.pth
+- เซฟ checkpoint ที่ val accuracy ดีที่สุด -> outputs/models/best_model.pth
 
 รัน:  uv run python run_step4_train.py
       uv run python run_step4_train.py --resume              # ต่อจาก checkpoint ล่าสุด

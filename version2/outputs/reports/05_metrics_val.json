@@ -15,5 +15,5 @@
   ],
   "classes_below_threshold": 0,
   "weak_threshold": 0.8,
-  "checkpoint": "C:\\Users\\Acer\\Desktop\\deep\\outputs_torch\\models\\best_model.pth"
+  "checkpoint": "C:\\Users\\Acer\\Desktop\\deep\\version2\\outputs\\models\\best_model.pth"
 }

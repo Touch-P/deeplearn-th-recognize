@@ -1,0 +1,29 @@
+# version1 — CNN + Transfer Learning ด้วย TensorFlow / Keras (MobileNetV2)
+#
+# ต้องใช้ Python 3.11 (TensorFlow 2.15 ยังไม่รองรับ 3.12 ขึ้นไป)
+#
+#     python -m venv .venv
+#     .venv\Scripts\activate          # Windows  (macOS/Linux: source .venv/bin/activate)
+#     pip install -r requirements.txt
+#
+# หมายเหตุ: TensorFlow 2.15 บน Windows รันบน CPU เท่านั้น (ตั้งแต่ 2.11 เป็นต้นมา
+# การรองรับ GPU บน native Windows ถูกถอดออก ต้องใช้ WSL2 ถ้าต้องการ GPU)
+
+tensorflow==2.15.0
+tensorflow-intel==2.15.0; sys_platform == "win32"
+tensorflow-io-gcs-filesystem<0.32; sys_platform == "win32"
+
+numpy>=1.26,<2.0        # TensorFlow 2.15 ยังไม่รองรับ numpy 2.x
+pandas>=2.2
+scipy>=1.11             # ใช้ใน src/augmentation.py (elastic distortion, gaussian filter)
+pillow>=10.0
+scikit-learn>=1.4
+
+matplotlib>=3.8
+seaborn>=0.13
+tqdm>=4.66
+
+jupyter>=1.0
+ipykernel>=6.29
+nbformat>=5.10
+nbconvert>=7.16

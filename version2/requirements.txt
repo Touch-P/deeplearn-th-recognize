@@ -1,0 +1,31 @@
+# version2 — ResNet50 + Transfer Learning + Error-driven Balanced Augmentation (PyTorch)
+#
+# ต้องใช้ Python 3.11 ขึ้นไป
+#
+# ติดตั้งแบบใช้ GPU (CUDA 12.4 — ที่ทดสอบไว้คือ torch 2.6.0+cu124 บน RTX 3050):
+#     python -m venv .venv
+#     .venv\Scripts\activate          # Windows  (macOS/Linux: source .venv/bin/activate)
+#     pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu124
+#
+# ติดตั้งแบบ CPU เท่านั้น (ช้ากว่ามาก — การเทรนจริงใช้ GPU 5.7 ชั่วโมง):
+#     pip install -r requirements.txt
+#
+# หมายเหตุ: wheel ของ torch บน PyPI สำหรับ Windows เป็นรุ่น CPU-only ถ้าต้องการ
+# CUDA ต้องใส่ --extra-index-url ของ PyTorch ตามคำสั่งข้างบน
+
+torch>=2.5,<2.8
+torchvision>=0.20,<0.23
+
+numpy>=1.26
+pandas>=2.2
+pillow>=10.0
+scikit-learn>=1.4
+
+matplotlib>=3.8
+seaborn>=0.13
+tqdm>=4.66
+
+jupyter>=1.0
+ipykernel>=6.29
+nbformat>=5.10
+nbconvert>=7.16

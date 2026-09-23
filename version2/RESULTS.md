@@ -241,19 +241,19 @@ Input 3 × 224 × 224
 | 9.0000 | 0.7440 | 0.9996 | 0.9996 | 0.7942 | 0.9856 | 0.9561 |
 | 10.0000 | 0.7434 | 0.9998 | 0.9998 | 0.7941 | 0.9862 | 0.9570 |
 
-![learning curves](outputs_torch/figures/04_learning_curves.png)
+![learning curves](outputs/figures/04_learning_curves.png)
 
 กราฟสามแผง: Loss, **Accuracy Rate** ของ train/val และ **Macro F1** ของ train/val (วงกลมเขียว = epoch ที่ถูกเลือกเป็น best checkpoint ตามเกณฑ์ macro F1)
 
 ### Confusion Matrix
 
-![confusion matrix](outputs_torch/figures/05_confusion_matrix_val.png)
+![confusion matrix](outputs/figures/05_confusion_matrix_val.png)
 
 (เวอร์ชัน normalized ต่อแถวอยู่ที่ `05_confusion_matrix_val_normalized.png` และของชุด test อยู่ที่ `06_test_confusion_matrix.png`)
 
 ### F1 รายคลาส
 
-![f1 per class](outputs_torch/figures/05_f1_per_class_val.png)
+![f1 per class](outputs/figures/05_f1_per_class_val.png)
 
 คลาสที่วัดได้ 70 คลาส · F1 < 0.8 มี **0 คลาส**
 
@@ -361,7 +361,7 @@ Input 3 × 224 × 224
 
 F1 ดีขึ้น 30 คลาส / แย่ลง 12 คลาส
 
-![before after](outputs_torch/figures/05_f1_before_after_augmentation.png)
+![before after](outputs/figures/05_f1_before_after_augmentation.png)
 
 **10 คลาสที่ F1 ดีขึ้นมากที่สุด** (★ = อยู่ในลิสต์ทายผิดบ่อย)
 
@@ -401,7 +401,7 @@ F1 ดีขึ้น 30 คลาส / แย่ลง 12 คลาส
 - **Macro F1 = 0.9455**
 - Weighted F1 = 0.9835 · Balanced accuracy = 0.9707 · Top-5 accuracy = 0.9990
 
-ไฟล์ผลทำนายรายภาพ: `outputs_torch/reports/06_test_predictions.csv` (filename, true_class_id, pred_class_id, pred_char, confidence, correct, top-3)
+ไฟล์ผลทำนายรายภาพ: `outputs/reports/06_test_predictions.csv` (filename, true_class_id, pred_class_id, pred_char, confidence, correct, top-3)
 
 **10 คลาสที่ F1 ต่ำสุดในชุด test**
 
@@ -446,6 +446,6 @@ uv run python run_step6_test_inference.py   # ทำนายชุด test 5%
 uv run python make_results.py               # สร้างไฟล์นี้ใหม่จากผลจริง
 ```
 
-รายละเอียดการตัดสินใจทางเทคนิคและข้อควรระวังอยู่ใน `PYTORCH_PIPELINE.md`
+รายละเอียดการตัดสินใจทางเทคนิคและข้อควรระวังอยู่ใน `README.md`
 
 **หมายเหตุ**: checkpoint `.pth` (95–284MB) ไม่ได้ commit ขึ้น repo เพราะเกินลิมิต 100MB ต่อไฟล์ของ GitHub - ถ้าต้องการเก็บโมเดลให้ใช้ Git LFS (ดูคำแนะนำใน `.gitignore`)

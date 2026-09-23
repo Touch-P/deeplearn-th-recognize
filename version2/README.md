@@ -1,19 +1,52 @@
-# PyTorch track: ResNet50 + Error-driven Balanced Augmentation
+# version2 — ResNet50 + Transfer Learning + Error-driven Balanced Augmentation (PyTorch)
 
-จำแนกตัวอักษร/ตัวเลขภาษาไทย 72 คลาส จากชุด `ThaiCharacter Dataset/round2/`
-(62,707 ภาพ, imbalanced 5,025 : 1)
+การทดลองที่ 2 ของโปรเจกต์รู้จำตัวอักษรและตัวเลขภาษาไทย 72 คลาส
+จากชุด `ThaiCharacter Dataset/round2/` (62,707 ภาพ, ไม่สมดุล 5,025 : 1)
 
-โปรเจกต์นี้มีสอง track ที่แยกกันสมบูรณ์ ไม่ทับไฟล์กัน:
+เทียบกับ [version1](../version1/) (MobileNetV2 96×96 + Focal Loss, Keras)
+เวอร์ชันนี้เปลี่ยนสี่อย่าง: **backbone เป็น ResNet50**, **ภาพเข้าโมเดล 224×224**,
+**จัดการความไม่สมดุลด้วย balanced augmentation แทน Focal Loss** และ
+**เฟรมเวิร์กเป็น PyTorch**
 
-| track | โค้ด | โมเดล | output |
+## ผลลัพธ์
+
+| ชุดข้อมูล | Accuracy | **Macro F1** | Weighted F1 | Balanced Acc | Top-5 | จำนวนภาพ |
+|---|---|---|---|---|---|---|
+| Validation | 0.9859 | **0.9584** | 0.9859 | 0.9860 | 0.9985 | 11,913 |
+| **Test 5%** (ไม่เคยถูกเทรนหรือ augment) | **0.9837** | **0.9455** | 0.9835 | 0.9707 | 0.9990 | 3,136 |
+
+**ผลของ Error-driven Balanced Augmentation** (เทียบกับ baseline ที่ไม่ augment)
+
+| กลุ่มคลาส | Macro F1 ก่อน | Macro F1 หลัง | ส่วนต่าง |
 |---|---|---|---|
-| TensorFlow (เดิม) | `notebooks/`, `src/`, `04_evaluate_confusion_matrix.py` | MobileNetV2 + focal loss | `outputs/` |
-| **PyTorch (อันนี้)** | `torch_pipeline/`, `run_step*.py` | **ResNet50 fine-tune ทั้งตัว** | `outputs_torch/` |
+| ทุกคลาส | 0.9538 | 0.9858 | **+0.032** |
+| เฉพาะ 14 คลาสที่ baseline ทายผิดบ่อย | 0.7922 | 0.9582 | **+0.166** |
+| คลาสอื่น ๆ | – | – | −0.002 |
+
+ประโยชน์ไปลงที่คลาสเล็กตามที่ออกแบบไว้ โดยแทบไม่กระทบคลาสที่เดิมทำได้ดีอยู่แล้ว
+ขณะที่ accuracy รวมขยับเพียง +0.001 — ถ้าวัดด้วย accuracy อย่างเดียวจะสรุปผิดว่า
+augmentation ไม่ช่วยอะไร
+
+รายงานผลแบบเต็ม: [RESULTS.md](RESULTS.md) · สรุปพร้อมนำเสนอ: [notebook.ipynb](notebook.ipynb)
 
 ## ติดตั้ง
 
 ```bash
-uv sync    # ลง torch 2.6.0+cu124 + torchvision ให้เรียบร้อยแล้วใน pyproject.toml
+cd version2
+python -m venv .venv
+.venv\Scripts\activate          # Windows
+pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu124
+```
+
+ที่ทดสอบไว้คือ torch 2.6.0+cu124 บน RTX 3050 Laptop 4GB (Python 3.11)
+ถ้าไม่มี GPU ตัดส่วน `--extra-index-url` ออกได้ แต่การเทรนจะช้ากว่ามาก
+
+ชุดข้อมูลไม่ได้อยู่ใน repo ให้วางไว้ที่ `<repo root>/ThaiCharacter Dataset/round2/`
+หรือชี้ path เองด้วย `THAI_DATASET_ROOT`
+
+```bash
+set THAI_DATASET_ROOT=D:\path\to\round2        # Windows
+export THAI_DATASET_ROOT=/path/to/round2       # macOS / Linux
 ```
 
 ## ลำดับการรัน
@@ -21,21 +54,25 @@ uv sync    # ลง torch 2.6.0+cu124 + torchvision ให้เรียบร�
 แต่ละขั้นเซฟผลไว้ให้ขั้นถัดไปอ่าน รันต่อกันตามลำดับนี้
 
 ```bash
-uv run python run_step1_explore.py          # ~1 นาที   สำรวจ + แบ่ง train/val/test
-uv run python run_step2_baseline.py         # ~10 นาที  baseline 5 epochs -> หาคลาสที่ทายผิดบ่อย
-uv run python run_step3_augment_plan.py     # ~1 นาที   สร้าง balanced manifest + กราฟ
-uv run python run_step4_train.py            # ~4 ชั่วโมง เทรนจริง 10 epochs
-uv run python run_step5_evaluate.py         # ~1 นาที   ประเมิน + เทียบก่อน-หลัง augment
-uv run python run_step6_test_inference.py   # ~1 นาที   ทำนายชุด test 5%
+python run_step1_explore.py          # ~1 นาที   สำรวจ + แบ่ง train/val/test
+python run_step2_baseline.py         # ~15 นาที  baseline 3 epochs -> หาคลาสที่ทายผิดบ่อย
+python run_step3_augment_plan.py     # ~1 นาที   สร้าง balanced manifest + กราฟ
+python run_step4_train.py            # ~5.7 ชม.  เทรนจริง 10 epochs (บน RTX 3050)
+python run_step5_evaluate.py         # ~1 นาที   ประเมิน + เทียบก่อน-หลัง augment
+python run_step6_test_inference.py   # ~1 นาที   ทำนายชุด test 5%
+python make_results.py               # สร้าง RESULTS.md จากตัวเลขจริง
 ```
+
+หรือรันทั้งสายต่อเนื่องด้วย `bash run_all.sh` (หยุดทันทีถ้ามีขั้นใดพลาด
+และเก็บ log แยกไฟล์ต่อขั้นใน `outputs/logs/`)
 
 ทุกสคริปต์มี `--help` และมีโหมดทดสอบเร็ว:
 
 ```bash
-uv run python run_step2_baseline.py --epochs 1 --limit-per-class 20
-uv run python run_step3_augment_plan.py --target-count 300
-uv run python run_step4_train.py --epochs 1 --max-steps 30
-uv run python run_step4_train.py --resume          # ต่อจาก checkpoint ถ้าเทรนหลุด
+python run_step2_baseline.py --epochs 1 --limit-per-class 20
+python run_step3_augment_plan.py --target-count 300
+python run_step4_train.py --epochs 1 --max-steps 30
+python run_step4_train.py --resume          # ต่อจาก checkpoint ถ้าเทรนหลุด
 ```
 
 พารามิเตอร์ทั้งหมด (path, seed, batch size, lr, epoch, เกณฑ์เลือกคลาสอ่อนแอ)
@@ -59,9 +96,9 @@ run_step1..6.py  ขั้นตอนตามสเปก 5 ข้อ
 ### 1. ชุด test 5% ต้องสร้างขึ้นใหม่
 
 โจทย์บอกว่า "มีชุด test แยกต่างหาก 5%" แต่ในโปรเจกต์ไม่มีไฟล์ไหนที่เป็นชุด test
-(`outputs/split.csv` ของ track TensorFlow มีแค่ train/val) `run_step1_explore.py`
+(`version1/outputs/split.csv` ของการทดลองที่ 1 มีแค่ train/val) `run_step1_explore.py`
 จึงตัด test 5% แบบ stratified ออกจาก dataset ทั้งก้อนก่อนเป็นอย่างแรก ล็อกด้วย
-`SEED = 42` และเขียนลง `outputs_torch/splits/splits.csv` เป็นคอลัมน์ `split`
+`SEED = 42` และเขียนลง `outputs/splits/splits.csv` เป็นคอลัมน์ `split`
 
 **การกันชุด test ออกจริงตรวจสอบได้จาก**: manifest ของ augmentation สร้างจาก
 แถวที่ `split == "train"` เท่านั้น (`run_step3_augment_plan.py` มี `assert` กำกับ)
@@ -135,7 +172,7 @@ batch size ที่วัดแล้วดีสุดคือ 48 (200 img/s,
 ## ไฟล์ output ที่ได้ (ใช้ในรายงาน/สไลด์)
 
 ```
-outputs_torch/
+outputs/
   figures/
     01_class_distribution.png              bar chart จำนวนภาพต่อคลาส
     01_split_per_class.png                 แท่งซ้อน train/val/test ต่อคลาส

@@ -6,8 +6,8 @@
   "macro_recall": 0.9437575450667907,
   "top5_accuracy": 0.9990433673469388,
   "split": "test",
-  "source": "C:\\Users\\Acer\\Desktop\\deep\\outputs_torch\\splits\\splits.csv",
+  "source": "C:\\Users\\Acer\\Desktop\\deep\\version2\\outputs\\splits\\splits.csv",
   "n_images": 3136,
   "n_classes_measured": 70,
-  "checkpoint": "C:\\Users\\Acer\\Desktop\\deep\\outputs_torch\\models\\best_model.pth"
+  "checkpoint": "C:\\Users\\Acer\\Desktop\\deep\\version2\\outputs\\models\\best_model.pth"
 }

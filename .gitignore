@@ -16,32 +16,32 @@ __pycache__/
 
 # Model checkpoints — only the final best model is force-added manually if small
 # enough (<50MB); everything else (intermediate epoch checkpoints, logs) is ignored.
-outputs/models/*.h5
-outputs/models/*.keras
-outputs/models/checkpoint_epoch_*
-!outputs/models/.gitkeep
+version1/outputs/models/*.h5
+version1/outputs/models/*.keras
+version1/outputs/models/checkpoint_epoch_*
+!version1/outputs/models/.gitkeep
 
-# PyTorch track (outputs_torch/)
+# version2 - PyTorch track (version2/outputs/)
 # ---------------------------------------------------------------------------
 # Checkpoint ของ ResNet50: best_model.pth / last_checkpoint.pth มีขนาด ~284MB
 # (น้ำหนักโมเดล 95MB + optimizer state ของ AdamW อีกสองเท่า) ซึ่งเกินลิมิต
 # 100MB ต่อไฟล์ของ GitHub push ถ้าต้องการเก็บโมเดลจริงใน repo ให้ตั้ง Git LFS:
 #     git lfs install
-#     git lfs track "outputs_torch/models/*.pth"
+#     git lfs track "version2/outputs/models/*.pth"
 #     git add .gitattributes
 # (โควตา LFS ฟรีของ GitHub คือ 1GB ต่อบัญชี พอสำหรับ best_model.pth ไฟล์เดียว)
-outputs_torch/models/*.pth
+version2/outputs/models/*.pth
 
 # splits.csv (6.5MB) และ train_manifest.csv.gz เก็บ absolute path ของทุกภาพ
 # สร้างใหม่ได้เสมอจาก run_step1_explore.py / run_step3_augment_plan.py เพราะ
 # ล็อกด้วย SEED = 42 ส่วนสรุปจำนวนต่อคลาสต่อ split อยู่ใน
-# outputs_torch/reports/01_split_per_class.csv ซึ่ง commit ไว้แล้ว
-outputs_torch/splits/
+# version2/outputs/reports/01_split_per_class.csv ซึ่ง commit ไว้แล้ว
+version2/outputs/splits/
 
 # stdout ดิบของแต่ละขั้น มีแต่ progress bar ของ tqdm - log จริงที่ใช้อ่านผล
-# คือ outputs_torch/logs/*.jsonl (หนึ่งบรรทัดต่อ epoch) ซึ่ง commit ไว้
-outputs_torch/logs/*_stdout.txt
-outputs_torch/logs/*.bak
+# คือ version2/outputs/logs/*.jsonl (หนึ่งบรรทัดต่อ epoch) ซึ่ง commit ไว้
+version2/outputs/logs/*_stdout.txt
+version2/outputs/logs/*.bak
 
 # OS / editor
 .DS_Store

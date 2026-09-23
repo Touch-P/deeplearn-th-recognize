@@ -1,7 +1,7 @@
 """
 make_results.py  -  สร้าง RESULTS.md จาก artifact จริงที่ pipeline เซฟไว้
 ==========================================================================
-อ่านทุกไฟล์ใน outputs_torch/reports/ แล้วประกอบเป็นรายงานเดียวที่พร้อมใช้
+อ่านทุกไฟล์ใน outputs/reports/ แล้วประกอบเป็นรายงานเดียวที่พร้อมใช้
 นำเสนอ ตัวเลขทุกตัวในรายงานถูกอ่านจากไฟล์ ไม่ได้พิมพ์ด้วยมือ จึงไม่มีทางที่
 รายงานจะขัดกับผลจริง และรันซ้ำได้ทุกครั้งที่เทรนใหม่
 
@@ -370,7 +370,7 @@ def main() -> None:
             cols["val_macro_f1"] = "**Val Macro F1**"
         A(md_table(history, cols, digits=4))
         A("")
-    A("![learning curves](outputs_torch/figures/04_learning_curves.png)")
+    A("![learning curves](outputs/figures/04_learning_curves.png)")
     A("")
     A("กราฟสามแผง: Loss, **Accuracy Rate** ของ train/val และ **Macro F1** ของ train/val "
       "(วงกลมเขียว = epoch ที่ถูกเลือกเป็น best checkpoint ตามเกณฑ์ macro F1)")
@@ -378,7 +378,7 @@ def main() -> None:
 
     A("### Confusion Matrix")
     A("")
-    A("![confusion matrix](outputs_torch/figures/05_confusion_matrix_val.png)")
+    A("![confusion matrix](outputs/figures/05_confusion_matrix_val.png)")
     A("")
     A("(เวอร์ชัน normalized ต่อแถวอยู่ที่ `05_confusion_matrix_val_normalized.png` "
       "และของชุด test อยู่ที่ `06_test_confusion_matrix.png`)")
@@ -387,7 +387,7 @@ def main() -> None:
     if val_per_class is not None and val_metrics:
         A("### F1 รายคลาส")
         A("")
-        A("![f1 per class](outputs_torch/figures/05_f1_per_class_val.png)")
+        A("![f1 per class](outputs/figures/05_f1_per_class_val.png)")
         A("")
         measured = val_per_class[val_per_class["support"] > 0]
         A(
@@ -434,7 +434,7 @@ def main() -> None:
         A(f"F1 ดีขึ้น {before_after.get('n_classes_f1_improved')} คลาส / "
           f"แย่ลง {before_after.get('n_classes_f1_worse')} คลาส")
         A("")
-        A("![before after](outputs_torch/figures/05_f1_before_after_augmentation.png)")
+        A("![before after](outputs/figures/05_f1_before_after_augmentation.png)")
         A("")
         if comparison is not None:
             top = comparison.nlargest(10, "delta_f1")
@@ -473,7 +473,7 @@ def main() -> None:
           f"Balanced accuracy = {fmt(test_metrics.get('balanced_accuracy'))} · "
           f"Top-5 accuracy = {fmt(test_metrics.get('top5_accuracy'))}")
         A("")
-        A("ไฟล์ผลทำนายรายภาพ: `outputs_torch/reports/06_test_predictions.csv` "
+        A("ไฟล์ผลทำนายรายภาพ: `outputs/reports/06_test_predictions.csv` "
           "(filename, true_class_id, pred_class_id, pred_char, confidence, correct, top-3)")
         A("")
         if test_per_class is not None:
@@ -510,7 +510,7 @@ def main() -> None:
     A("uv run python make_results.py               # สร้างไฟล์นี้ใหม่จากผลจริง")
     A("```")
     A("")
-    A("รายละเอียดการตัดสินใจทางเทคนิคและข้อควรระวังอยู่ใน `PYTORCH_PIPELINE.md`")
+    A("รายละเอียดการตัดสินใจทางเทคนิคและข้อควรระวังอยู่ใน `README.md`")
     A("")
     A("**หมายเหตุ**: checkpoint `.pth` (95–284MB) ไม่ได้ commit ขึ้น repo เพราะเกินลิมิต "
       "100MB ต่อไฟล์ของ GitHub - ถ้าต้องการเก็บโมเดลให้ใช้ Git LFS (ดูคำแนะนำใน `.gitignore`)")

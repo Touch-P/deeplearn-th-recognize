@@ -34,5 +34,5 @@
   "imbalance_before": 3819.0,
   "imbalance_after": 1.0,
   "fixed_augmentation": true,
-  "manifest_path": "C:\\Users\\Acer\\Desktop\\deep\\outputs_torch\\splits\\train_manifest.csv.gz"
+  "manifest_path": "C:\\Users\\Acer\\Desktop\\deep\\version2\\outputs\\splits\\train_manifest.csv.gz"
 }

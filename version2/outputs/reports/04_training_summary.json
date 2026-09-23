@@ -17,5 +17,5 @@
   "scheduler": "CosineAnnealingLR",
   "amp": true,
   "train_images_per_epoch": 274968,
-  "best_model_path": "C:\\Users\\Acer\\Desktop\\deep\\outputs_torch\\models\\best_model.pth"
+  "best_model_path": "C:\\Users\\Acer\\Desktop\\deep\\version2\\outputs\\models\\best_model.pth"
 }

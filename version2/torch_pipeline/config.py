@@ -25,13 +25,34 @@ import numpy as np
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-DATA_ROOT = PROJECT_ROOT / "ThaiCharacter Dataset" / "round2"
+PROJECT_ROOT = Path(__file__).resolve().parent.parent  # = version2/
+
+
+def resolve_data_root() -> Path:
+    """หาโฟลเดอร์ภาพต้นฉบับ ตามลำดับความสำคัญนี้
+
+    1. ตัวแปรสภาพแวดล้อม ``THAI_DATASET_ROOT`` (ถ้าตั้งไว้ ใช้อันนี้เสมอ)
+    2. ``version2/ThaiCharacter Dataset/round2`` - ถ้าคัดลอกข้อมูลมาไว้ในเวอร์ชันนี้
+    3. ``<repo root>/ThaiCharacter Dataset/round2`` - ที่เก็บจริงในปัจจุบัน
+       ซึ่งแชร์กับ version1 เพราะเป็นข้อมูลตั้งต้นชุดเดียวกัน (62,707 ภาพ
+       ~200MB) ไม่ควรเก็บสองชุด - ตัวเวอร์ชันยัง independent กันเพราะไม่มี
+       การ import โค้ดข้ามโฟลเดอร์ มีแต่การชี้ไปที่ "ข้อมูล" ชุดเดียวกัน
+    """
+    import os
+
+    env = os.environ.get("THAI_DATASET_ROOT")
+    if env:
+        return Path(env)
+    local = PROJECT_ROOT / "ThaiCharacter Dataset" / "round2"
+    if local.exists():
+        return local
+    return PROJECT_ROOT.parent / "ThaiCharacter Dataset" / "round2"
+
+
+DATA_ROOT = resolve_data_root()
 LABEL_JSON = PROJECT_ROOT / "label.json"
 
-# แยก output ของ PyTorch ออกจาก outputs/ ของ track TensorFlow เดิม
-# เพื่อไม่ให้ไฟล์ทับกัน
-OUTPUT_ROOT = PROJECT_ROOT / "outputs_torch"
+OUTPUT_ROOT = PROJECT_ROOT / "outputs"
 FIGURES_DIR = OUTPUT_ROOT / "figures"
 REPORTS_DIR = OUTPUT_ROOT / "reports"
 MODELS_DIR = OUTPUT_ROOT / "models"

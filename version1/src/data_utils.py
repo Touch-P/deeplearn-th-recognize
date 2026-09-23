@@ -27,8 +27,32 @@ import pandas as pd
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-DATA_ROOT = PROJECT_ROOT / "ThaiCharacter Dataset" / "round2"
+PROJECT_ROOT = Path(__file__).resolve().parent.parent  # = version1/
+
+
+def resolve_data_root() -> Path:
+    """หาโฟลเดอร์ภาพต้นฉบับ ตามลำดับความสำคัญนี้
+
+    1. ตัวแปรสภาพแวดล้อม ``THAI_DATASET_ROOT`` (ถ้าตั้งไว้ ใช้อันนี้เสมอ)
+    2. ``version1/ThaiCharacter Dataset/round2`` - ถ้าคัดลอกข้อมูลมาไว้ในเวอร์ชันนี้
+    3. ``<repo root>/ThaiCharacter Dataset/round2`` - ที่เก็บจริงในปัจจุบัน
+       ซึ่งแชร์กับ version2 เพราะเป็นข้อมูลตั้งต้นชุดเดียวกัน (62,707 ภาพ
+       ~200MB) ไม่ควรเก็บสองชุด - ตัวเวอร์ชันยัง independent กันเพราะไม่มี
+       การ import โค้ดข้ามโฟลเดอร์ มีแต่การชี้ไปที่ "ข้อมูล" ชุดเดียวกัน
+
+    คืน path ตัวเลือกที่ 3 เป็นค่าตั้งต้นถ้าไม่พบที่ไหนเลย เพื่อให้ข้อความ
+    error ของ list_images() บอก path ที่คาดหวังได้ถูก
+    """
+    env = os.environ.get("THAI_DATASET_ROOT")
+    if env:
+        return Path(env)
+    local = PROJECT_ROOT / "ThaiCharacter Dataset" / "round2"
+    if local.exists():
+        return local
+    return PROJECT_ROOT.parent / "ThaiCharacter Dataset" / "round2"
+
+
+DATA_ROOT = resolve_data_root()
 LABEL_JSON = PROJECT_ROOT / "label.json"
 OUTPUTS_DIR = PROJECT_ROOT / "outputs"
 FIGURES_DIR = OUTPUTS_DIR / "figures"
