@@ -1,0 +1,19 @@
+{
+  "model": "C:\\Users\\Acer\\Desktop\\deep\\outputs\\models\\best_model.keras",
+  "split": "val",
+  "holdout_frac": 0.0,
+  "n_images": 12545,
+  "n_classes": 72,
+  "accuracy": 0.8542048624950179,
+  "balanced_accuracy": 0.7119869186305082,
+  "macro_f1": 0.6804100583864301,
+  "weighted_f1": 0.8457693623037088,
+  "top5_accuracy": 0.9855719410123556,
+  "n_classes_measured": 70,
+  "classes_with_zero_support": [
+    "163",
+    "177"
+  ],
+  "classes_below_threshold": 28,
+  "weak_threshold": 0.8
+}

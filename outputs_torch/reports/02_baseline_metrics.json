@@ -1,0 +1,14 @@
+{
+  "accuracy": 0.9846386300679929,
+  "balanced_accuracy": 0.9540843673016309,
+  "macro_f1": 0.9273396636751584,
+  "weighted_f1": 0.9845502534312689,
+  "macro_recall": 0.9275820237654746,
+  "top5_accuracy": 0.9988248132292453,
+  "epochs": 3,
+  "n_val_images": 11913,
+  "stage": "baseline",
+  "best_metric": "macro_f1",
+  "best_score": 0.9273396636751584,
+  "weak_metric": "f1-score"
+}

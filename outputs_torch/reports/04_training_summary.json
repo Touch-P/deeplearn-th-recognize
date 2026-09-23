@@ -1,0 +1,21 @@
+{
+  "epochs_run": 10,
+  "best_metric": "macro_f1",
+  "best_score": 0.9583684957568954,
+  "best_epoch": 8,
+  "best_val_macro_f1": 0.9583684957568954,
+  "best_val_acc": 0.9858977587509443,
+  "final_train_acc": 0.999789066364086,
+  "final_train_macro_f1": 0.9997891376186657,
+  "final_val_acc": 0.9862335263997314,
+  "final_val_macro_f1": 0.9570373107576953,
+  "batch_size": 48,
+  "lr": 0.0001,
+  "weight_decay": 0.01,
+  "label_smoothing": 0.1,
+  "optimizer": "AdamW",
+  "scheduler": "CosineAnnealingLR",
+  "amp": true,
+  "train_images_per_epoch": 274968,
+  "best_model_path": "C:\\Users\\Acer\\Desktop\\deep\\outputs_torch\\models\\best_model.pth"
+}

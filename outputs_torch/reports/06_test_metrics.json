@@ -1,0 +1,13 @@
+{
+  "accuracy": 0.9837372448979592,
+  "balanced_accuracy": 0.9707220463544133,
+  "macro_f1": 0.9454923973556877,
+  "weighted_f1": 0.9835437658620781,
+  "macro_recall": 0.9437575450667907,
+  "top5_accuracy": 0.9990433673469388,
+  "split": "test",
+  "source": "C:\\Users\\Acer\\Desktop\\deep\\outputs_torch\\splits\\splits.csv",
+  "n_images": 3136,
+  "n_classes_measured": 70,
+  "checkpoint": "C:\\Users\\Acer\\Desktop\\deep\\outputs_torch\\models\\best_model.pth"
+}

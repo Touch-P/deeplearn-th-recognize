@@ -1,0 +1,19 @@
+{
+  "accuracy": 0.9858977587509443,
+  "balanced_accuracy": 0.9860307152219187,
+  "macro_f1": 0.9583684957568954,
+  "weighted_f1": 0.9859399139534151,
+  "macro_recall": 0.9586409731324209,
+  "top5_accuracy": 0.9984890455804584,
+  "split": "val",
+  "n_images": 11913,
+  "n_classes": 72,
+  "n_classes_measured": 70,
+  "classes_with_zero_support": [
+    "163",
+    "177"
+  ],
+  "classes_below_threshold": 0,
+  "weak_threshold": 0.8,
+  "checkpoint": "C:\\Users\\Acer\\Desktop\\deep\\outputs_torch\\models\\best_model.pth"
+}

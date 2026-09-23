@@ -1,0 +1,16 @@
+{
+  "macro_f1_baseline": 0.9538350826373055,
+  "macro_f1_final": 0.9857504527785211,
+  "macro_f1_delta": 0.03191537014121533,
+  "mean_recall_baseline": 0.9540843673016312,
+  "mean_recall_final": 0.9860307152219187,
+  "mean_recall_delta": 0.03194634792028759,
+  "weak_classes_mean_f1_baseline": 0.7922416787196107,
+  "weak_classes_mean_f1_final": 0.9582174188182357,
+  "weak_classes_mean_f1_delta": 0.16597574009862512,
+  "other_classes_mean_f1_delta": -0.001599722348137132,
+  "n_classes_f1_improved": 30,
+  "n_classes_f1_worse": 12,
+  "n_weak_classes_f1_improved": 12,
+  "n_weak_classes": 14
+}

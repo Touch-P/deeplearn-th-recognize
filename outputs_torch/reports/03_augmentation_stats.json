@@ -1,0 +1,38 @@
+{
+  "target_count": 3819,
+  "cap_majority": false,
+  "classes_above_target": {},
+  "n_classes": 72,
+  "train_images_before": 47658,
+  "train_images_after": 274968,
+  "synthesized_images": 227310,
+  "growth_factor": 5.77,
+  "n_weak_classes": 16,
+  "weak_classes": [
+    "163",
+    "169",
+    "170",
+    "171",
+    "177",
+    "199",
+    "200",
+    "204",
+    "210",
+    "213",
+    "215",
+    "217",
+    "229",
+    "231",
+    "247",
+    "248"
+  ],
+  "aug_kind_counts": {
+    "normal": 174565,
+    "intense": 52745,
+    "original": 47658
+  },
+  "imbalance_before": 3819.0,
+  "imbalance_after": 1.0,
+  "fixed_augmentation": true,
+  "manifest_path": "C:\\Users\\Acer\\Desktop\\deep\\outputs_torch\\splits\\train_manifest.csv.gz"
+}
