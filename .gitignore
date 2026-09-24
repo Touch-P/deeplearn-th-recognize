@@ -41,6 +41,7 @@ version2/outputs/splits/
 # stdout ดิบของแต่ละขั้น มีแต่ progress bar ของ tqdm - log จริงที่ใช้อ่านผล
 # คือ version2/outputs/logs/*.jsonl (หนึ่งบรรทัดต่อ epoch) ซึ่ง commit ไว้
 version2/outputs/logs/*_stdout.txt
+version2/outputs/logs/*_eval.txt
 version2/outputs/logs/*.bak
 
 # OS / editor

@@ -29,6 +29,27 @@ augmentation ไม่ช่วยอะไร
 
 รายงานผลแบบเต็ม: [RESULTS.md](RESULTS.md) · สรุปพร้อมนำเสนอ: [notebook.ipynb](notebook.ipynb)
 
+### version 3 — fine-tune ต่อด้วย manual class-weighted loss
+
+ทดลองต่อยอดจาก checkpoint ของ v2 อีก 5 epochs โดยใส่น้ำหนักต่อคลาสใน
+`CrossEntropyLoss` เจาะจง 21 คลาสที่ confusion matrix ชี้ว่ายังสับสนกันเป็นระบบ
+(า/ๅ/ว, ั/้, ด/ต, ช/ซ, ใ) รันด้วย `run_step7_finetune_v3.py`
+
+| ตัวชี้วัด (validation) | v2 | v3 | ส่วนต่าง |
+|---|---|---|---|
+| Accuracy | 0.9859 | 0.9858 | −0.0001 |
+| Macro F1 | 0.9584 | 0.9582 | −0.0002 |
+| Balanced accuracy | 0.9860 | 0.9868 | +0.0008 |
+| recall เฉลี่ยของ 21 คลาสที่ถ่วงน้ำหนัก | 0.9776 | 0.9819 | **+0.0043** |
+| recall เฉลี่ยของ 51 คลาสที่ไม่ถ่วง | 0.9897 | 0.9889 | −0.0007 |
+
+**สรุป: กลุ่มเป้าหมายดีขึ้นจริงแต่แลกมาด้วยคลาสอื่น ภาพรวมจึงเท่าเดิม**
+ไม่มี epoch ไหนทำ macro F1 ชนะ v2 ดังนั้น **โมเดลที่แนะนำให้ใช้งานยังเป็น
+`best_model.pth` ของ v2** ส่วน `model_v3.pth` เก็บไว้เป็นบันทึกการทดลอง
+(มี flag `beat_baseline = False` ใน checkpoint)
+
+รายละเอียดครบ: [RESULTS_v3.md](RESULTS_v3.md)
+
 ## ติดตั้ง
 
 ```bash

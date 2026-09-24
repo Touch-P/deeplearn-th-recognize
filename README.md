@@ -43,6 +43,12 @@ accuracy **0.9837** · macro F1 **0.9455** (3,136 ภาพ) — ตัวเล
 > บน split เดียวกัน ก่อน-หลังทำ augmentation: macro F1 0.9538 → 0.9858 (**+0.032**)
 > และเฉพาะ 14 คลาสที่ baseline ทายผิดบ่อย F1 ขึ้น **+0.166** ขณะที่คลาสอื่น −0.002
 
+นอกจากนี้ยังมีการทดลองย่อย **version 3** (`version2/run_step7_finetune_v3.py`):
+fine-tune ต่อจาก v2 อีก 5 epochs ด้วย manual class-weighted loss เจาะจง 21 คลาสที่
+สับสนกันเป็นระบบ ผลคือกลุ่มเป้าหมาย recall ดีขึ้น +0.0043 แต่คลาสอื่นลดลง 0.0007
+ภาพรวมจึงเท่าเดิม (macro F1 0.9584 → 0.9582) รายละเอียด:
+[version2/RESULTS_v3.md](version2/RESULTS_v3.md)
+
 ## ชุดข้อมูล
 
 ไม่ได้เก็บใน repo เพราะขนาดใหญ่ (62,707 ภาพ ~200MB) ให้วางไว้ที่
@@ -113,13 +119,17 @@ uv sync        # ลง TensorFlow 2.15 + PyTorch 2.6 (cu124) ในชุดเ
 │
 └── version2/                  การทดลองที่ 2 — ResNet50 + Balanced Augmentation (PyTorch)
     ├── README.md
-    ├── RESULTS.md             รายงานผลแบบเต็ม สร้างอัตโนมัติจากไฟล์ผลลัพธ์
+    ├── RESULTS.md             รายงานผลแบบเต็มของ v2 สร้างอัตโนมัติจากไฟล์ผลลัพธ์
+    ├── RESULTS_v3.md          บันทึกการทดลอง v3 (fine-tune ด้วย class-weighted loss)
     ├── notebook.ipynb         สรุปทั้งการทดลองพร้อมกราฟ (สำหรับนำเสนอ)
+    ├── augment_3class.ipynb   ดูภาพคลาส ว/ซ/ช หลัง augment ตามที่โมเดลเห็นจริง
     ├── requirements.txt
     ├── label.json
-    ├── run_step1..6.py        6 ขั้นตอนของ pipeline
-    ├── run_all.sh             รันทั้งสายต่อเนื่อง
+    ├── run_step1..6.py        6 ขั้นตอนของ pipeline หลัก
+    ├── run_step7_finetune_v3.py   v3: fine-tune +5 epochs ด้วย manual class weights
+    ├── run_all.sh             รันขั้นที่ 2-6 ต่อเนื่อง
     ├── make_results.py        สร้าง RESULTS.md จากตัวเลขจริง
+    ├── make_note_v3.py        สร้าง RESULTS_v3.md จากตัวเลขจริง
     ├── torch_pipeline/        config, data, augment, model, reporting, viz
     └── outputs/               figures/ reports/ models/ logs/ splits/
 ```

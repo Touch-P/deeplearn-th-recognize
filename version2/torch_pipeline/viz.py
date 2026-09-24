@@ -459,6 +459,11 @@ def plot_before_after_metric(
     metric: str = "recall",
     name: str = "05_recall_before_after_augmentation.png",
     top_n: int | None = None,
+    title: str | None = None,
+    before_label: str = "baseline (ก่อน augment)",
+    after_label: str = "โมเดลสุดท้าย (หลัง augment)",
+    mark_prefix: str = "* ",
+    xlim: tuple[float, float] | None = None,
 ) -> Path:
     """เทียบ per-class recall ก่อน (baseline) vs หลัง (โมเดลสุดท้าย)
 
@@ -489,28 +494,37 @@ def plot_before_after_metric(
     # เพราะชื่อคอลัมน์มีขีดกลาง itertuples จะเปลี่ยนเป็นชื่อ positional)
     for yi, (b, f) in enumerate(zip(base_v, final_v)):
         ax.plot([b, f], [yi, yi], color=GRID, linewidth=2, zorder=1)
-    ax.scatter(base_v, y, s=42, color=GREY, zorder=2, label="baseline (ก่อน augment)")
+    ax.scatter(base_v, y, s=42, color=GREY, zorder=2, label=before_label)
     ax.scatter(
         final_v,
         y,
         s=42,
         color=np.where(df["_delta"].to_numpy() >= 0, GREEN, RED),
         zorder=3,
-        label="โมเดลสุดท้าย (หลัง augment)",
+        label=after_label,
     )
 
     ax.set_yticks(y)
     ax.set_yticklabels(
-        [f"{'★ ' if w else ''}{lab}" for lab, w in zip(df["label"], df["was_weak"])], fontsize=8
+        [f"{mark_prefix if w else ''}{lab}" for lab, w in zip(df["label"], df["was_weak"])],
+        fontsize=8,
     )
-    ax.set_xlim(-0.03, 1.05)
+    if xlim is None:
+        # ค่าเริ่มต้นแสดงช่วง 0-1 เต็ม แต่ถ้าค่าทุกตัวเกาะกลุ่มกันสูง ๆ ให้ซูมเข้า
+        # ไม่งั้นจุดทั้งหมดจะทับกันอยู่ขอบขวาจนดูส่วนต่างไม่ออก
+        lo = float(min(base_v.min(), final_v.min()))
+        xlim = (-0.03, 1.05) if lo < 0.80 else (max(0.0, lo - 0.03), 1.01)
+    ax.set_xlim(*xlim)
     ax.set_xlabel(f"{metric} ต่อคลาส (validation)")
     ax.set_title(
-        f"Per-class {metric} ก่อน-หลัง Error-driven Balanced Augmentation\n"
-        "★ = คลาสที่ถูกจัดเป็น 'ทายผิดบ่อย' จาก baseline (เขียว = ดีขึ้น, แดง = แย่ลง)",
+        title
+        or (
+            f"Per-class {metric} ก่อน-หลัง Error-driven Balanced Augmentation\n"
+            "* = คลาสที่ถูกจัดเป็น 'ทายผิดบ่อย' จาก baseline (เขียว = ดีขึ้น, แดง = แย่ลง)"
+        ),
         fontsize=12,
     )
-    ax.legend(frameon=True, loc="lower right")
+    ax.legend(frameon=True, loc="lower left", framealpha=0.95)
     ax.grid(axis="x", color=GRID, linewidth=0.8)
     ax.set_axisbelow(True)
     for s in ("top", "right", "left"):

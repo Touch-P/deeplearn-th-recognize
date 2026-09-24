@@ -1,0 +1,49 @@
+{
+  "version": "v3",
+  "from_checkpoint": "C:\\Users\\Acer\\Desktop\\deep\\version2\\outputs\\models\\best_model.pth",
+  "v3_checkpoint": "C:\\Users\\Acer\\Desktop\\deep\\version2\\outputs\\models\\model_v3.pth",
+  "class_weights_file": "C:\\Users\\Acer\\Desktop\\deep\\version2\\outputs\\models\\class_weights_v3.json",
+  "epochs_finetuned": 5,
+  "lr": 1e-05,
+  "n_weighted_classes": 21,
+  "before": {
+    "accuracy": 0.9858977587509443,
+    "balanced_accuracy": 0.9860307152219187,
+    "macro_f1": 0.9583684957568954,
+    "weighted_f1": 0.9859399139534151,
+    "macro_recall": 0.9586409731324209,
+    "top5_accuracy": 0.9984890455804584
+  },
+  "after": {
+    "accuracy": 0.9858138168387476,
+    "balanced_accuracy": 0.9868253621827092,
+    "macro_f1": 0.95816092042612,
+    "weighted_f1": 0.9858639481584262,
+    "macro_recall": 0.9594135465665228,
+    "top5_accuracy": 0.9969780911609166
+  },
+  "delta": {
+    "accuracy": -8.394191219673885e-05,
+    "balanced_accuracy": 0.0007946469607905682,
+    "macro_f1": -0.00020757533077542245,
+    "weighted_f1": -7.59657949889192e-05,
+    "macro_recall": 0.0007725734341018642,
+    "top5_accuracy": -0.0015109544195417435
+  },
+  "weighted_classes": {
+    "mean_recall_before": 0.9775589790043795,
+    "mean_recall_after": 0.9819036372361831,
+    "errors_before": 153,
+    "errors_after": 153,
+    "n_improved": 6,
+    "n_worse": 5
+  },
+  "other_classes": {
+    "mean_recall_before": 0.9896614593151497,
+    "mean_recall_after": 0.9889346728740775,
+    "errors_before": 15,
+    "errors_after": 16,
+    "n_improved": 1,
+    "n_worse": 1
+  }
+}
